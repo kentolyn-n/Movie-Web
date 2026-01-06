@@ -13,7 +13,7 @@ export default function Favourite() {
         return (
             <div className={`min-h-screen text-white p-4 sm:p-8  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
                 <p className={`mt-55 text-3xl sm:text-4xl py-10 font-extrabold text-transparent bg-clip-text ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-slate-200 text-black '} mb-10 text-center flex flex-col justify-center items-center`}>No Favourite Movies yet</p>
-                <div>
+                <div className="items-center">
                      <div className="justify-items-center">
                         <div className="items-center">
                             <button
