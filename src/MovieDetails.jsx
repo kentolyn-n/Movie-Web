@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchMovieDetails, fetchMovieCredits, fetchMovieVideos, getYouTubeTrailer} from "./service/apiService";
+import { fetchMovieDetails, fetchMovieCredits} from "./service/apiService";
+import Trailers from "./components/Trailers";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
@@ -11,18 +12,18 @@ export default function MovieDetails() {
   const [movie, setMovie] = useState(null);
   const [credits, setCredits] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [trailerMovie, setTrailerMovie] = useState(null);
+  const [showTrailers, setShowTrailer] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       try {
         const movieData = await fetchMovieDetails(id);
         const creditData = await fetchMovieCredits(id);
-        const videoData = await fetchMovieVideos(id);
+      
 
         setMovie(movieData);
         setCredits(creditData);
-        setTrailerMovie(getYouTubeTrailer(videoData));
+        
       } catch (err) {
         console.error("Error loading movie:", err);
       } finally {
@@ -33,7 +34,11 @@ export default function MovieDetails() {
   }, [id]);
 
   if (loading) {
-    return <div className="text-center py-10 text-white">Loading...</div>;
+    return (
+      <div className="min-h-screen">
+        <div className="text-center py-10 text-white mt-55 text-3xl sm:text-4xl">Loading...</div>;
+      </div>
+    );
   }
 
   if (!movie) {
@@ -98,19 +103,17 @@ export default function MovieDetails() {
             )}
 
             <button
-              onClick={() => trailerMovie && window.open(trailerMovie, "_blank")}
-              disabled={!trailerMovie}
-              
-              className={`mt-4 px-4 py-2 text-black font-semibold rounded-lg ${
-                      trailerMovie
-                        ? "bg-yellow-500 text-black hover:bg-yellow-600"
-                        : "bg-gray-600 text-gray-300 cursor-not-allowed"}`}>
+              onClick={() => setShowTrailer(!showTrailers)} className= 'mt-4 px-4 py-2 text-black font-semibold rounded-lg  bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600'>
               🎬 watch Trailer
             </button>
           </div>
         </div>
+        
 
         <div className="mt-10">
+          <div className="mt-5">
+          <Trailers movieId={movie.id} open={showTrailers} />
+        </div>
           <h2 className="text-2xl font-bold mb-4">Top Cast</h2>
 
           <div

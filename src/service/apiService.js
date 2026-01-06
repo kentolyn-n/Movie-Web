@@ -1,6 +1,6 @@
 const API_KEY = "12b40aed8c9d804a8011a03a25512c34"; 
 const BASE_URL = "https://api.themoviedb.org/3";
-
+const VITE_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const AUTH_TOKEN =
   "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMmI0MGFlZDhjOWQ4MDRhODAxMWEwM2EyNTUxMmMzNCIsIm5iZiI6MTc1NzY1MDAyMS43NzUsInN1YiI6IjY4YzM5YzY1YjU1MDhkNmU5OWJhYzhhYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.AiPdxroDk1UPwdpcMSTC5cNkWIOUlTHUoj0k0h9kqn4";
 
@@ -77,13 +77,20 @@ export async function fetchMovieVideos(movieId) {
   }
 }
 
-export function getYouTubeTrailer(videos) {
-  if (!videos || !videos.results) return null;
+export async function fetchTrailerVideos(movieId) {
+  const url = `${BASE_URL}/movie/${movieId}/videos?api_key=${import.meta.env.VITE_TMDB_API_KEY}&language=en-US`;
 
-  const trailer = videos.results.find(
-    (video) => video.site === "YouTube" && video.type === "Trailer"
-  );
+  try {
+    const response = await fetch(url, { headers });
 
-  if (!trailer) return null;
-  return `https://www.youtube.com/watch?v=${trailer.key}`;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch movie videos: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error fetching movie movies:", err);
+    throw err;
+  }
 }
+
